@@ -1,4 +1,4 @@
-import { getAllParkings, getParkingById, createParking } from '../db/database.js'
+import { getAllParkings, getParkingById, createParking, createBooking, allocateParking, removeAllocateParking, getAllBookedParkings } from '../db/database.js'
 
 export const parkingModels = {
 
@@ -17,6 +17,22 @@ export const parkingModels = {
             console.error('Error creating user:', error);
             throw error;
         }
+    },
+
+    queryCreateBooking: async (userId, bookingTime, graceTime,id) => {
+        return await createBooking(userId, bookingTime, graceTime,id);
+    },
+
+    queryAllocateParking: async (isAllocated, userId, id) => {
+        return await allocateParking(isAllocated, userId, id);
+    },
+
+    queryRemoveAllocateParking: async (isAllocated, userId, id) => {
+        return await removeAllocateParking(isAllocated, userId, id);
+    },
+
+    queryGetAllBookedParkings: async () => {
+        return await getAllBookedParkings();
     },
 
     // queryDeleteUser : async (id) => await deleteUser(id),

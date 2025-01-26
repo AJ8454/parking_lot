@@ -71,11 +71,10 @@ export async function getAllParkings() {
     return result
 }
 
-
 export async function getParkingById(id) {
     const [result] = await pool.query(`
         SELECT *
-        FROM user
+        FROM parking
         WHERE id = ?
     `,[id])
     return result[0]
@@ -88,4 +87,37 @@ export async function createParking(parkingNo, isAllocated) {
     `,[parkingNo, isAllocated])
     const id = result.insertId; 
     return await getParkingById(id);
+}
+
+export async function createBooking(userId, bookingTime, graceTime,id) {
+    await pool.query(`
+        UPDATE parking SET userId = ?, bookingTime = ?, graceTime = ?
+        WHERE id = ?
+    `,[userId, bookingTime, graceTime, id])
+    return await getParkingById(id);
+}
+
+export async function allocateParking(isAllocated, userId, id) {
+    await pool.query(`
+        UPDATE parking SET isAllocated = ?
+        WHERE id = ? AND userId = ?
+    `,[isAllocated, id, userId])
+    return await getParkingById(id);
+}
+
+export async function removeAllocateParking(isAllocated, userId, id) {
+    await pool.query(`
+        UPDATE parking SET isAllocated = ?, userId = ?
+        WHERE id = ?
+    `,[isAllocated, userId, id])
+    return await getParkingById(id);
+}
+
+export async function getAllBookedParkings() {
+    const [result] = await pool.query(`
+        SELECT *
+        FROM parking
+        WHERE userId IS NOT NULL
+    `,[])
+    return result
 }
